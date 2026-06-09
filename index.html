@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AccessHR — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:focus-visible{outline:3px solid #F97316;outline-offset:3px;border-radius:4px}
+.skip-link{position:absolute;top:-999px;left:0;z-index:9999;background:#EA6B0A;color:white;padding:8px 16px;font-size:14px;font-weight:600;border-radius:0 0 8px 0;text-decoration:none;}
+.skip-link:focus{top:0}
+:root{
+  --orange:#F97316;--orange-mid:#FB923C;--orange-light:#FED7AA;--orange-soft:#FFF7ED;--orange-xsoft:#FFF3E6;--orange-dark:#EA6B0A;
+  --emerald:#059669;--emerald-soft:#D1FAE5;--rose:#E11D48;--rose-soft:#FFE4E6;--amber:#D97706;--amber-soft:#FEF3C7;
+  --sky:#0284C7;--sky-soft:#E0F2FE;--purple:#7C3AED;--purple-soft:#EDE9FE;
+  --text-dark:#1A1A2E;--text-mid:#374151;--text-light:#6B7280;
+  --border:#E5E7EB;--border-soft:#F3F4F6;--bg:#F9FAFB;--white:#FFFFFF;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.09),0 4px 8px rgba(0,0,0,.05);
+  --sidebar-w:224px;--radius:14px;--radius-sm:10px;
+  --font:'Plus Jakarta Sans',sans-serif;--transition:.2s ease;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text-dark);min-height:100vh;display:flex;justify-content:center;line-height:1.5;-webkit-font-smoothing:antialiased}
+.app-shell{width:100%;max-width:1440px;display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;float:left;z-index:100;padding:24px 12px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;color:var(--text-dark);margin-bottom:32px;padding-left:4px}
+.logo-mark{width:34px;height:34px;background:#F97316;border-radius:10px;display:grid;place-items:center}
+.logo-mark svg{width:18px;height:18px}
+.nav-label{font-size:12px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.1em;padding:0 10px;margin:12px 0 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);font-size:13.5px;font-weight:500;color:var(--text-light);cursor:pointer;transition:all var(--transition);margin-bottom:2px;text-decoration:none;position:relative;letter-spacing:.01em;border:none;background:none;width:100%;text-align:left;font-family:var(--font)}
+.nav-item:hover{background:var(--bg);color:var(--text-dark)}
+.nav-item.active{background:var(--orange-soft);color:var(--orange);font-weight:600}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.8}
+.nav-item.active svg{opacity:1}
+.nav-badge{margin-left:auto;background:var(--orange);color:white;font-size:12px;font-weight:700;border-radius:20px;padding:2px 7px}
+.sidebar-bottom{margin-top:auto}
+.upgrade-card{background:var(--orange-soft);border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid var(--orange-light)}
+.upgrade-icon{width:38px;height:38px;background:var(--orange);border-radius:10px;display:grid;place-items:center;margin:0 auto 10px}
+.upgrade-icon svg{width:20px;height:20px}
+.upgrade-title{font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:4px;text-align:center}
+.upgrade-sub{font-size:11px;color:var(--text-mid);line-height:1.4;margin-bottom:10px;text-align:center}
+.btn-upgrade{display:block;background:white;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-dark);cursor:pointer;width:100%;font-family:var(--font);transition:.15s}
+.btn-upgrade:hover{background:#f0f0f0}
+.user-row{display:flex;align-items:center;gap:9px;padding:8px 6px;border-radius:12px;cursor:pointer;transition:.15s;background:none;border:none;width:100%;font-family:var(--font);text-align:left}
+.user-row:hover{background:var(--bg)}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:12px;font-weight:600;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-email{font-size:12px;color:var(--text-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* MAIN */
+.main{flex:1;min-height:100vh;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);box-shadow:var(--shadow-sm);height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.topbar-greeting{font-size:15px;font-weight:600;color:var(--text-dark);display:flex;align-items:center;gap:6px}
+.topbar-name{color:var(--orange)}
+.topbar-date-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--text-mid);background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px}
+.topbar-date-chip svg{width:11px;height:11px;color:var(--orange)}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border);background:white;display:grid;place-items:center;cursor:pointer;transition:all var(--transition);position:relative}
+.icon-btn:hover{background:var(--bg);box-shadow:var(--shadow-sm)}
+.icon-btn svg{width:16px;height:16px;color:var(--text-mid)}
+.notif-dot{position:absolute;top:8px;right:8px;width:6px;height:6px;background:var(--rose);border-radius:50%;border:1.5px solid white}
+.btn-add-emp{background:var(--orange);color:white;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--font);transition:.15s}
+.btn-add-emp:hover{background:var(--orange-dark)}
+.btn-add-emp svg{width:14px;height:14px}
+.page-title-bar{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--text-dark)}
+.page-title-bar .breadcrumb{font-size:13px;font-weight:500;color:var(--text-light)}
+.page-title-bar .breadcrumb span{color:var(--orange)}
+
+/* CONTENT */
+.content{padding:20px;flex:1;width:100%;min-width:0;display:flex;flex-direction:column;gap:16px}
+
+/* PAGE TRANSITIONS */
+.page{display:none;animation:fadeIn .2s ease}
+.page.active{display:flex;flex-direction:column;gap:16px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* HERO BANNER */
+.hero-banner{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:0;display:grid;grid-template-columns:1fr auto;overflow:hidden;position:relative}
+.hero-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 30% 50%,rgba(255,137,4,.06) 0%,transparent 70%);pointer-events:none}
+.hero-left{padding:18px 24px;display:flex;align-items:center;gap:20px;background:var(--white);position:relative}
+.hero-left::after{content:'';position:absolute;right:0;top:18%;bottom:18%;width:1px;background:var(--border)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--orange);background:var(--orange-soft);padding:3px 9px;border-radius:20px;width:fit-content;margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.hero-eyebrow-dot{width:5px;height:5px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-title{font-size:18px;font-weight:700;color:var(--text-dark);line-height:1.2;letter-spacing:-.4px;margin-bottom:0;white-space:nowrap}
+.hero-title span{color:var(--orange)}
+.hero-insight{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-mid);background:var(--bg);border-radius:6px;padding:5px 10px;border:1px solid var(--border);white-space:nowrap}
+.hero-insight strong{color:var(--emerald);font-weight:700}
+.hero-text-block{display:flex;flex-direction:column;gap:6px}
+.hero-actions{display:flex;gap:8px;flex-shrink:0}
+.hero-btn-primary{background:var(--orange);color:white;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:.15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.hero-btn-primary:hover{background:var(--orange-dark)}
+.hero-btn-sec{background:var(--bg);color:var(--text-dark);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);transition:.15s;white-space:nowrap}
+.hero-btn-sec:hover{background:var(--orange-soft);border-color:var(--orange-light);color:var(--orange)}
+.hero-right{background:var(--white);padding:20px 16px;display:flex;align-items:center;flex-shrink:0;border-left:1px solid var(--border)}
+.hero-kpi-row{display:flex;flex-direction:row;gap:0;align-items:center}
+.hero-kpi-item{display:flex;flex-direction:column;align-items:center;padding:0 14px;position:relative;gap:3px}
+.hero-kpi-item+.hero-kpi-item::before{content:'';position:absolute;left:0;top:10%;bottom:10%;width:1px;background:var(--border)}
+.hero-kpi-name{font-size:11px;color:var(--text-light);font-weight:500;white-space:nowrap;letter-spacing:.03em}
+.hero-kpi-val{font-size:15px;font-weight:700;color:var(--text-dark);line-height:1;letter-spacing:-.3px}
+.hero-kpi-badge{font-size:11px;font-weight:600;white-space:nowrap;color:var(--emerald)}
+.hero-kpi-badge.down{color:var(--rose)}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.stat-card{background:var(--white);border-radius:var(--radius);padding:22px;border:1px solid var(--border);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:all var(--transition);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;cursor:pointer}
+.stat-card:hover{border-color:var(--orange-light);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.stat-card-left{flex:1;min-width:0}
+.stat-icon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:14px}
+.stat-icon svg{width:18px;height:18px}
+.stat-label{font-size:12px;color:var(--text-light);font-weight:600;margin-bottom:5px;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+.stat-value{font-size:28px;font-weight:700;color:var(--text-dark);letter-spacing:-.8px;margin-bottom:10px;line-height:1}
+.stat-footer{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-light);flex-wrap:nowrap;white-space:nowrap}
+.stat-badge{display:inline-flex;align-items:center;gap:2px;font-size:12px;font-weight:600;padding:2px 6px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.badge-up{background:var(--emerald-soft);color:#065F46}
+.badge-down{background:var(--rose-soft);color:#9F1239}
+.stat-chart{width:100%;max-width:110px;height:40px;flex-shrink:0;display:block;overflow:visible}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+.page-h1{font-size:20px;font-weight:700;color:var(--text-dark);letter-spacing:-.3px}
+.page-sub{font-size:13px;color:var(--text-light);margin-top:2px}
+
+/* CARD */
+.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:22px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-size:14px;font-weight:700;color:var(--text-dark);letter-spacing:-.1px}
+.section-title{font-size:14px;font-weight:700;color:var(--text-dark);letter-spacing:-.1px}
+.view-all{font-size:12px;font-weight:600;color:var(--orange);cursor:pointer;background:none;border:none;font-family:var(--font);padding:5px 10px;border-radius:8px;transition:all var(--transition)}
+.view-all:hover{background:var(--orange-soft)}
+
+/* GRID LAYOUTS */
+.row2{display:grid;grid-template-columns:1fr 320px;gap:16px}
+.row3{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.row4{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.stat-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+
+/* HEATMAP */
+.heatmap-wrap{overflow-x:auto}
+.heatmap-months{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-bottom:4px}
+.month-label{font-size:12px;font-weight:600;color:var(--text-mid);text-align:center}
+.heatmap-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:6px}
+.month-col{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(10,1fr);grid-auto-flow:column;gap:4px}
+.hm-empty{background:transparent;pointer-events:none}
+.hm-cell{aspect-ratio:1;border-radius:5px;transition:transform .1s;cursor:pointer}
+.hm-cell:hover{transform:scale(1.3);z-index:10;position:relative}
+.hm-0{background:#FFF7ED}.hm-1{background:#FED7AA}.hm-2{background:#FED7AA}.hm-3{background:#FB923C}.hm-4{background:#EA6B0A}
+.heatmap-legend{display:flex;align-items:center;gap:5px;margin-top:10px;font-size:12px;color:var(--text-light)}
+.legend-cell{width:12px;height:12px;border-radius:3px}
+.hm-stats-row{display:flex;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.hm-stat{flex:1;text-align:center}
+.hm-stat-val{font-size:16px;font-weight:700;color:var(--text-dark)}
+.hm-stat-lbl{font-size:12px;color:var(--text-mid);margin-top:2px;font-weight:500}
+
+/* GAUGE */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.gauge-svg-wrap{position:relative;width:100%;max-width:240px}
+.gauge-center{position:absolute;bottom:0;left:50%;transform:translateX(-50%);text-align:center;padding-bottom:4px}
+.gauge-total-label{font-size:12px;color:var(--text-mid);font-weight:500}
+.gauge-total-val{font-size:22px;font-weight:700;color:var(--text-dark);line-height:1}
+.gauge-legend{width:100%;display:flex;flex-direction:column;gap:10px}
+.gl-item{display:flex;align-items:center;gap:10px}
+.gl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.gl-label{font-size:12px;color:var(--text-mid);flex:1;font-weight:500}
+.gl-val{font-size:13px;font-weight:700;color:var(--text-dark)}
+.gl-pct{font-size:12px;color:var(--text-light);min-width:30px;text-align:right}
+.gl-bar-track{flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+.gl-bar-fill{height:100%;border-radius:99px}
+
+/* TASKS */
+.task-item{padding:14px 0;border-bottom:1px solid var(--border-soft)}
+.task-item:last-child{border-bottom:none}
+.task-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.task-check{width:17px;height:17px;border:2px solid var(--border);border-radius:5px;flex-shrink:0;margin-top:1px;cursor:pointer;transition:all var(--transition);background:none;padding:0}
+.task-check:hover{border-color:var(--orange)}
+.task-check.done{background:var(--orange);border-color:var(--orange);display:grid;place-items:center}
+.task-check.done::after{content:'✓';font-size:12px;color:white}
+.task-info{flex:1}
+.task-name{font-size:13.5px;font-weight:600;color:var(--text-dark);margin-bottom:3px;line-height:1.3}
+.task-desc{font-size:12px;color:var(--text-light);line-height:1.5}
+.task-tag{font-size:12px;font-weight:600;padding:2px 7px;border-radius:20px}
+.task-avatars{display:flex;margin-left:auto;flex-shrink:0}
+.task-progress-bar{height:5px;background:var(--border-soft);border-radius:99px;overflow:hidden;margin-bottom:5px}
+.task-progress-fill{height:100%;background:linear-gradient(90deg,#FB923C,#F97316);border-radius:99px}
+.task-meta{display:flex;align-items:center;justify-content:space-between}
+.task-pct{font-size:12px;font-weight:600;color:var(--orange)}
+.task-due{font-size:12px;color:var(--text-light)}
+
+/* MEETINGS */
+.meeting-item{padding:14px;border-radius:var(--radius-sm);margin-bottom:10px;border:1px solid var(--border);transition:all var(--transition);box-shadow:var(--shadow-sm)}
+.meeting-item:hover{border-color:var(--orange-light);background:var(--orange-xsoft);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.meeting-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.meeting-name{font-size:13px;font-weight:600;color:var(--text-dark)}
+.m-avatars{display:flex}
+.meeting-time{font-size:12px;color:var(--text-mid);display:flex;align-items:center;gap:5px;margin-bottom:8px}
+.meeting-time svg{width:12px;height:12px;color:var(--orange)}
+.meeting-footer{display:flex;align-items:center;justify-content:space-between}
+.meeting-platform{font-size:12px;color:var(--text-light);background:var(--bg);padding:3px 8px;border-radius:20px;font-weight:500}
+.btn-join{background:white;color:var(--text-dark);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:.15s}
+.btn-join:hover{background:var(--bg);border-color:var(--orange);color:var(--orange)}
+
+/* TABLE */
+.year-select{font-size:12px;font-weight:600;color:var(--text-mid);border:1px solid var(--border);border-radius:8px;padding:4px 10px;cursor:pointer;background:white;font-family:var(--font)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:12px;font-weight:600;color:var(--text-light);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap;letter-spacing:.03em;text-transform:uppercase}
+tbody td{padding:12px;border-bottom:1px solid var(--border-soft);font-size:13px;color:var(--text-mid)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg)}
+.emp-cell{display:flex;align-items:center;gap:10px}
+.emp-name{font-size:13px;font-weight:600;color:var(--text-dark)}
+.emp-role{font-size:12px;color:var(--text-light)}
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px}
+.status-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+.pill-active{background:var(--emerald-soft);color:#065F46}
+.pill-active::before{background:#059669}
+.pill-leave{background:var(--amber-soft);color:#92400E}
+.pill-leave::before{background:#92400E}
+.pill-inactive{background:var(--border);color:#374151}
+.pill-inactive::before{background:#6B7280}
+.dept-chip{font-size:12px;font-weight:500;padding:3px 8px;border-radius:20px;background:var(--orange-soft);color:#C2410C}
+
+/* PAYROLL */
+.payroll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.payroll-item{background:var(--bg);border-radius:12px;padding:14px;text-align:center}
+.payroll-lbl{font-size:12px;color:var(--text-mid);font-weight:500;margin-bottom:4px}
+.payroll-val{font-size:18px;font-weight:700;color:var(--text-dark)}
+.payroll-sub{font-size:12px;color:var(--text-light);margin-top:2px}
+
+/* RECRUITMENT */
+.pipeline-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.pipeline-stage{flex:1;background:var(--bg);border-radius:10px;padding:10px 12px;min-width:80px}
+.pipeline-count{font-size:18px;font-weight:700;color:var(--text-dark)}
+.pipeline-name{font-size:12px;color:var(--text-mid);font-weight:500;margin-top:2px}
+.pipeline-bar{height:3px;border-radius:99px;margin-top:8px;background:var(--border)}
+.pipeline-fill{height:100%;border-radius:99px;background:var(--orange)}
+
+/* JOB CARD */
+.job-card{background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--border);padding:16px;transition:all var(--transition)}
+.job-card:hover{border-color:var(--orange-light);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.job-title{font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:4px}
+.job-meta{font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.job-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--orange-soft);color:var(--orange-dark)}
+.job-actions{display:flex;gap:6px;margin-top:12px}
+.btn-sm{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:.15s;border:1px solid var(--border);background:white;color:var(--text-dark)}
+.btn-sm:hover{background:var(--bg)}
+.btn-sm.primary{background:var(--orange);color:white;border-color:var(--orange)}
+.btn-sm.primary:hover{background:var(--orange-dark)}
+
+/* LEAVE */
+.leave-list{display:flex;flex-direction:column;gap:10px}
+.leave-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg);border:1px solid var(--border-soft)}
+.leave-info{flex:1}
+.leave-name{font-size:13px;font-weight:600;color:var(--text-dark);line-height:1.3}
+.leave-type{font-size:12px;color:var(--text-mid);margin-top:1px}
+.leave-dates{font-size:12px;color:var(--text-light)}
+.leave-status{font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px}
+.ls-pending{background:var(--amber-soft);color:#92400E}
+.ls-approved{background:var(--emerald-soft);color:#065F46}
+.ls-rejected{background:var(--rose-soft);color:#9F1239}
+
+/* SCHEDULE */
+.schedule-day{margin-bottom:20px}
+.schedule-day-label{font-size:12px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.schedule-event{display:flex;gap:12px;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--white);margin-bottom:8px;transition:all var(--transition)}
+.schedule-event:hover{border-color:var(--orange-light);background:var(--orange-xsoft)}
+.event-time{font-size:12px;font-weight:600;color:var(--text-light);white-space:nowrap;min-width:90px}
+.event-bar{width:3px;border-radius:99px;flex-shrink:0}
+.event-body{}
+.event-title{font-size:13px;font-weight:600;color:var(--text-dark)}
+.event-detail{font-size:12px;color:var(--text-light);margin-top:2px}
+
+/* MESSAGES */
+.msg-list{display:flex;flex-direction:column;gap:2px}
+.msg-item{display:flex;gap:12px;padding:12px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:.15s;border:1px solid transparent}
+.msg-item:hover{background:var(--bg);border-color:var(--border)}
+.msg-item.unread{background:var(--orange-soft);border-color:var(--orange-light)}
+.msg-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.msg-body{flex:1;min-width:0}
+.msg-name{font-size:13px;font-weight:600;color:var(--text-dark)}
+.msg-preview{font-size:12px;color:var(--text-light);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-meta{text-align:right;flex-shrink:0}
+.msg-time{font-size:11px;color:var(--text-light)}
+.msg-badge{display:inline-block;background:var(--orange);color:white;font-size:11px;font-weight:700;border-radius:20px;padding:1px 6px;margin-top:3px}
+
+/* SETTINGS */
+.settings-section{margin-bottom:24px}
+.settings-section-title{font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-soft)}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:13px;font-weight:500;color:var(--text-dark)}
+.settings-sub{font-size:12px;color:var(--text-light);margin-top:2px}
+.toggle{width:36px;height:20px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;transition:.2s;border:none;flex-shrink:0}
+.toggle.on{background:var(--orange)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:white;border-radius:50%;transition:.2s;box-shadow:var(--shadow-sm)}
+.toggle.on::after{left:18px}
+.input-field{border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:13px;font-family:var(--font);color:var(--text-dark);outline:none;transition:.15s;background:white;min-width:200px}
+.input-field:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.1)}
+
+/* PROGRESS BAR WIDGET */
+.prog-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.prog-label{font-size:12px;font-weight:500;color:var(--text-mid);min-width:100px}
+.prog-track{flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;background:var(--orange)}
+.prog-val{font-size:12px;font-weight:600;color:var(--text-dark);min-width:30px;text-align:right}
+
+/* MOBILE */
+.hamburger-btn{display:none;width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border);background:white;place-items:center;cursor:pointer;transition:all var(--transition);flex-shrink:0}
+.hamburger-btn:hover{background:var(--bg)}
+.hamburger-btn svg{width:18px;height:18px;color:var(--text-mid)}
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;backdrop-filter:blur(2px)}
+.drawer-overlay.open{display:block}
+.drawer-sidebar{position:fixed;top:0;left:0;height:100vh;width:260px;background:var(--white);z-index:160;transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;padding:20px 12px;overflow-y:auto}
+.drawer-sidebar.open{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.drawer-close-btn{width:32px;height:32px;border:none;background:var(--bg);border-radius:8px;cursor:pointer;display:grid;place-items:center;color:var(--text-mid)}
+.drawer-close-btn:hover{background:var(--orange-soft);color:var(--orange)}
+.drawer-close-btn svg{width:16px;height:16px}
+.drawer-sidebar .nav-item{display:flex;justify-content:flex-start;padding:10px 12px;gap:10px}
+.drawer-sidebar .nav-item span{display:inline!important}
+.drawer-sidebar .nav-label{display:block!important}
+.drawer-sidebar .nav-badge{display:inline-block!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 24px;color:var(--text-light)}
+.empty-state svg{width:48px;height:48px;margin:0 auto 12px;opacity:.3}
+.empty-state p{font-size:14px}
+
+/* BADGE CHIPS */
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px}
+.chip-orange{background:var(--orange-soft);color:var(--orange-dark)}
+.chip-green{background:var(--emerald-soft);color:#065F46}
+.chip-blue{background:var(--sky-soft);color:#0369A1}
+.chip-red{background:var(--rose-soft);color:#9F1239}
+.chip-amber{background:var(--amber-soft);color:#92400E}
+.chip-purple{background:var(--purple-soft);color:var(--purple)}
+
+@media(max-width:1280px){:root{--sidebar-w:190px}.row2{grid-template-columns:1fr 280px}}
+@media(max-width:1024px){:root{--sidebar-w:64px}.logo span,.nav-label,.nav-item span,.upgrade-card,.user-info,.user-chevron{display:none}.logo{justify-content:center;padding-left:0}.nav-item{justify-content:center;padding:10px}.user-row{justify-content:center;padding:8px 0}.sidebar{padding:16px 8px}.stat-row,.stat-row-3{grid-template-columns:repeat(2,1fr)}.row2,.row3,.row4{grid-template-columns:1fr}.payroll-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.sidebar{display:none}.hamburger-btn{display:grid}.content{padding:12px}.topbar-greeting{display:none!important}.topbar-date-chip{background:transparent;border:none;padding:0;font-size:14px;font-weight:600;color:var(--text-dark)}.topbar-date-chip svg{display:none}.stat-row,.stat-row-3{grid-template-columns:repeat(2,1fr);gap:10px}.row2,.row3,.row4{grid-template-columns:1fr;gap:10px}.hero-banner{grid-template-columns:1fr;}.hero-right{display:none}}
+@media(max-width:480px){.stat-row,.stat-row-3{grid-template-columns:1fr 1fr;gap:8px}.stat-card{padding:14px}.stat-value{font-size:20px}.payroll-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<div class="app-shell" role="application" aria-label="AccessHR Dashboard">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" aria-label="Main navigation">
+  <div class="logo" aria-label="AccessHR">
+    <div class="logo-mark" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15H6a4 4 0 0 0-4 4v2"/><path d="m14.305 16.53.923-.382"/><path d="m15.228 13.852-.923-.383"/><path d="m16.852 12.228-.383-.923"/><path d="m16.852 17.772-.383.924"/><path d="m19.148 12.228.383-.923"/><path d="m19.53 18.696-.382-.924"/><path d="m20.772 13.852.924-.383"/><path d="m20.772 16.148.924.383"/><circle cx="18" cy="15" r="3"/><circle cx="9" cy="7" r="4"/></svg>
+    </div>
+    <span>AccessHR</span>
+  </div>
+
+  <div class="nav-label" id="nav-main-label">Main</div>
+  <nav aria-labelledby="nav-main-label">
+    <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="nav-item" data-page="employees" onclick="navigate('employees',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Employees</span>
+    </button>
+    <button class="nav-item" data-page="attendance" onclick="navigate('attendance',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>Attendance</span>
+    </button>
+    <button class="nav-item" data-page="projects" onclick="navigate('projects',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      <span>Projects</span>
+    </button>
+    <button class="nav-item" data-page="schedule" onclick="navigate('schedule',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>Schedule</span>
+    </button>
+    <button class="nav-item" data-page="messages" onclick="navigate('messages',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Messages</span>
+      <span class="nav-badge" aria-label="8 unread">8</span>
+    </button>
+    <button class="nav-item" data-page="payroll" onclick="navigate('payroll',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>Payroll</span>
+    </button>
+    <button class="nav-item" data-page="recruitment" onclick="navigate('recruitment',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+      <span>Recruitment</span>
+      <span class="nav-badge" aria-label="3 open">3</span>
+    </button>
+    <button class="nav-item" data-page="leave" onclick="navigate('leave',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span>Leave</span>
+    </button>
+  </nav>
+
+  <div class="nav-label" style="margin-top:12px">Settings</div>
+  <nav>
+    <button class="nav-item" data-page="settings" onclick="navigate('settings',this)">
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="upgrade-card">
+      <div class="upgrade-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+      </div>
+      <div class="upgrade-title">Trial plan</div>
+      <div class="upgrade-sub">12 days left to enjoy all features.</div>
+      <button class="btn-upgrade">Upgrade plan</button>
+    </div>
+    <button class="user-row" aria-label="User menu">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=68&h=68&fit=crop&crop=face&auto=format" alt="Marcus Webb" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--orange-soft)">
+      <div class="user-info">
+        <div class="user-name">Marcus Webb</div>
+        <div class="user-email">marcus.webb@nexushr.io</div>
+      </div>
+    </button>
+  </div>
+</aside>
+
+<!-- MOBILE DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<nav class="drawer-sidebar" id="drawerSidebar" aria-label="Mobile navigation" aria-hidden="true">
+  <div class="drawer-close">
+    <div class="logo" style="margin-bottom:0">
+      <div class="logo-mark" style="width:34px;height:34px"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M10 15H6a4 4 0 0 0-4 4v2"/></svg></div>
+      <span style="font-weight:700;font-size:16px">AccessHR</span>
+    </div>
+    <button class="drawer-close-btn" onclick="closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard',this);closeDrawer()">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span>Dashboard</span>
+  </button>
+  <button class="nav-item" data-page="employees" onclick="navigate('employees',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Employees</span></button>
+  <button class="nav-item" data-page="attendance" onclick="navigate('attendance',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Attendance</span></button>
+  <button class="nav-item" data-page="projects" onclick="navigate('projects',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>Projects</span></button>
+  <button class="nav-item" data-page="schedule" onclick="navigate('schedule',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Schedule</span></button>
+  <button class="nav-item" data-page="messages" onclick="navigate('messages',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Messages</span><span class="nav-badge">8</span></button>
+  <button class="nav-item" data-page="payroll" onclick="navigate('payroll',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span>Payroll</span></button>
+  <button class="nav-item" data-page="recruitment" onclick="navigate('recruitment',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg><span>Recruitment</span><span class="nav-badge">3</span></button>
+  <button class="nav-item" data-page="leave" onclick="navigate('leave',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Leave</span></button>
+  <button class="nav-item" data-page="settings" onclick="navigate('settings',this);closeDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></button>
+</nav>
+
+<!-- MAIN -->
+<div class="main" id="main-content" role="main">
+  <header class="topbar" role="banner">
+    <div class="topbar-left">
+      <button class="hamburger-btn" id="hamburgerBtn" onclick="openDrawer()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="topbar-greeting"><span id="topbarGreetWord">Good morning</span> 👋 <span class="topbar-name">Marcus</span></div>
+      <div class="topbar-date-chip"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span id="topbarDate"></span></div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <button class="icon-btn"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-dot"></span></button>
+      <div style="display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:99px;border:1px solid var(--border);background:white;cursor:pointer" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='white'">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=68&h=68&fit=crop&crop=face&auto=format" alt="Marcus Webb" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid var(--orange-soft);flex-shrink:0">
+        <div style="line-height:1.2"><div style="font-size:12px;font-weight:600;color:var(--text-dark)">Marcus Webb</div><div style="font-size:11px;color:var(--text-light)">HR Manager</div></div>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px;color:var(--text-light)"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <button class="btn-add-emp"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Employee</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <div class="page active" id="page-dashboard">
+      <section class="hero-banner" aria-label="HR Analytics Overview">
+        <div class="hero-left">
+          <div class="hero-text-block">
+            <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>HR Analytics Overview</div>
+            <h1 class="hero-title">Workforce <span>at a Glance</span></h1>
+          </div>
+          <div class="hero-insight">📈 Q2 productivity up <strong>+12%</strong> · Headcount stable at 487</div>
+          <div class="hero-actions">
+            <button class="hero-btn-primary" onclick="navigate('employees',document.querySelector('[data-page=employees]'))"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Full Report</button>
+            <button class="hero-btn-sec">Export</button>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-kpi-row">
+            <div class="hero-kpi-item"><div class="hero-kpi-name">Retention</div><div class="hero-kpi-val">94%</div><div class="hero-kpi-badge">↑ +3.2%</div></div>
+            <div class="hero-kpi-item"><div class="hero-kpi-name">Headcount</div><div class="hero-kpi-val">487</div><div class="hero-kpi-badge">↑ +4.6%</div></div>
+            <div class="hero-kpi-item"><div class="hero-kpi-name">Satisfaction</div><div class="hero-kpi-val">4.7★</div><div class="hero-kpi-badge">↑ +0.4</div></div>
+            <div class="hero-kpi-item"><div class="hero-kpi-name">Turnover</div><div class="hero-kpi-val">3.1%</div><div class="hero-kpi-badge down">↓ −1.2%</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI CARDS — clickable, navigate to relevant pages -->
+      <div class="stat-row">
+        <div class="stat-card" onclick="navigate('employees',document.querySelector('[data-page=employees]'))" title="View Employees" tabindex="0" role="button" aria-label="487 total employees. Navigate to employees page.">
+          <div class="stat-card-left">
+            <div class="stat-icon" style="background:var(--orange-soft)"><svg fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="stat-label">Total Employees</div>
+            <div class="stat-value">487</div>
+            <div class="stat-footer"><span class="stat-badge badge-up">↑ +4.6%</span><span>vs last month</span></div>
+          </div>
+          <svg class="stat-chart" viewBox="0 0 120 40" preserveAspectRatio="none" fill="none"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FB923C" stop-opacity=".18"/><stop offset="100%" stop-color="#FB923C" stop-opacity="0"/></linearGradient></defs><path d="M0 34 C10 32,18 28,28 24 C38 20,46 22,56 17 C66 12,74 10,84 7 C94 4,104 3,120 2" stroke="#FB923C" stroke-width="2" stroke-linecap="round"/><path d="M0 34 C10 32,18 28,28 24 C38 20,46 22,56 17 C66 12,74 10,84 7 C94 4,104 3,120 2 L120 40 L0 40 Z" fill="url(#g1)"/></svg>
+        </div>
+        <div class="stat-card" onclick="navigate('payroll',document.querySelector('[data-page=payroll]'))" title="View Payroll" tabindex="0" role="button" aria-label="$2.4M total payroll. Navigate to payroll page.">
+          <div class="stat-card-left">
+            <div class="stat-icon" style="background:var(--emerald-soft)"><svg fill="none" stroke="var(--emerald)" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div class="stat-label">Total Payroll</div>
+            <div class="stat-value">$2.4M</div>
+            <div class="stat-footer"><span class="stat-badge badge-up">↑ +8.3%</span><span>vs last month</span></div>
+          </div>
+          <svg class="stat-chart" viewBox="0 0 120 40" preserveAspectRatio="none" fill="none"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10B981" stop-opacity=".18"/><stop offset="100%" stop-color="#10B981" stop-opacity="0"/></linearGradient></defs><path d="M0 32 C8 30,16 26,26 28 C36 30,44 20,54 15 C64 10,72 13,82 8 C92 3,104 4,120 2" stroke="#10B981" stroke-width="2" stroke-linecap="round"/><path d="M0 32 C8 30,16 26,26 28 C36 30,44 20,54 15 C64 10,72 13,82 8 C92 3,104 4,120 2 L120 40 L0 40 Z" fill="url(#g2)"/></svg>
+        </div>
+        <div class="stat-card" onclick="navigate('recruitment',document.querySelector('[data-page=recruitment]'))" title="View Recruitment" tabindex="0" role="button" aria-label="24 new hires. Navigate to recruitment page.">
+          <div class="stat-card-left">
+            <div class="stat-icon" style="background:var(--sky-soft)"><svg fill="none" stroke="var(--sky)" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div>
+            <div class="stat-label">New Hires (MTD)</div>
+            <div class="stat-value">24</div>
+            <div class="stat-footer"><span class="stat-badge badge-up">↑ +12.0%</span><span>vs last month</span></div>
+          </div>
+          <svg class="stat-chart" viewBox="0 0 120 40" preserveAspectRatio="none" fill="none"><defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0EA5E9" stop-opacity=".18"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0"/></linearGradient></defs><path d="M0 30 C10 28,18 32,28 26 C38 20,46 24,56 18 C66 12,76 9,86 6 C96 3,106 5,120 3" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round"/><path d="M0 30 C10 28,18 32,28 26 C38 20,46 24,56 18 C66 12,76 9,86 6 C96 3,106 5,120 3 L120 40 L0 40 Z" fill="url(#g3)"/></svg>
+        </div>
+        <div class="stat-card" onclick="navigate('recruitment',document.querySelector('[data-page=recruitment]'))" title="View Open Positions" tabindex="0" role="button" aria-label="18 open positions. Navigate to recruitment page.">
+          <div class="stat-card-left">
+            <div class="stat-icon" style="background:var(--rose-soft)"><svg fill="none" stroke="var(--rose)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+            <div class="stat-label">Open Positions</div>
+            <div class="stat-value">18</div>
+            <div class="stat-footer"><span class="stat-badge badge-down">↓ -1.4%</span><span>vs last month</span></div>
+          </div>
+          <svg class="stat-chart" viewBox="0 0 120 40" preserveAspectRatio="none" fill="none"><defs><linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E11D48" stop-opacity=".18"/><stop offset="100%" stop-color="#E11D48" stop-opacity="0"/></linearGradient></defs><path d="M0 4 C10 5,18 7,28 10 C38 13,46 11,56 16 C66 21,76 20,86 26 C96 32,106 33,120 36" stroke="#E11D48" stroke-width="2" stroke-linecap="round"/><path d="M0 4 C10 5,18 7,28 10 C38 13,46 11,56 16 C66 21,76 20,86 26 C96 32,106 33,120 36 L120 40 L0 40 Z" fill="url(#g4)"/></svg>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE + EMPLOYMENT STATUS -->
+      <div class="row2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Attendance Heatmap — 2025</div>
+            <button class="view-all" onclick="navigate('attendance',document.querySelector('[data-page=attendance]'))">View Full →</button>
+          </div>
+          <div class="heatmap-wrap">
+            <div class="heatmap-months" id="hmMonths"></div>
+            <div class="heatmap-grid" id="hmGrid"></div>
+          </div>
+          <div class="heatmap-legend">Less <span class="legend-cell" style="background:#FFF7ED;border:1px solid var(--border)"></span><span class="legend-cell" style="background:#FED7AA"></span><span class="legend-cell" style="background:#FB923C"></span><span class="legend-cell" style="background:#EA6B0A"></span> More</div>
+          <div class="hm-stats-row">
+            <div class="hm-stat"><div class="hm-stat-val">92.4%</div><div class="hm-stat-lbl">Avg Attendance</div></div>
+            <div class="hm-stat"><div class="hm-stat-val">6</div><div class="hm-stat-lbl">Absent Today</div></div>
+            <div class="hm-stat"><div class="hm-stat-val">14</div><div class="hm-stat-lbl">Late Arrivals</div></div>
+            <div class="hm-stat"><div class="hm-stat-val">3</div><div class="hm-stat-lbl">On Leave</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Employment Status</div><button class="view-all">View All</button></div>
+          <div class="gauge-wrap">
+            <div class="gauge-svg-wrap" style="max-width:260px">
+              <!-- Semicircle donut: Full arc = π*r = π*90 ≈ 282.7 for a half circle -->
+              <!-- Full-time 66% = 186.6, Part-time 21% = 59.4, Internship 13% = 36.7 -->
+              <!-- Rendered right-to-left using stroke-dashoffset on a half-circle path -->
+              <svg viewBox="-20 0 240 130" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- arc center=100,105 r=85; endpoints: x=15,185 y=105 -->
+                <!-- Full arc length = π*85 ≈ 266.9 -->
+                <!-- Full-time 66% = 174.2 (trimmed 2px for gap) -->
+                <path d="M15 105 A85 85 0 0 1 185 105" stroke="#F97316" stroke-width="36" stroke-linecap="butt" fill="none"
+                  stroke-dasharray="174.2 266.9" stroke-dashoffset="0"/>
+                <!-- Part-time 21% = 52.0, offset=-178.2 -->
+                <path d="M15 105 A85 85 0 0 1 185 105" stroke="#FDDCAA" stroke-width="36" stroke-linecap="butt" fill="none"
+                  stroke-dasharray="52.0 266.9" stroke-dashoffset="-178.2"/>
+                <!-- Internship 13% = 34.7, offset=-234.2 -->
+                <path d="M15 105 A85 85 0 0 1 185 105" stroke="#059669" stroke-width="36" stroke-linecap="butt" fill="none"
+                  stroke-dasharray="34.7 266.9" stroke-dashoffset="-234.2"/>
+              </svg>
+              <div class="gauge-center" style="padding-bottom:10px"><div class="gauge-total-label">Total</div><div class="gauge-total-val">487</div></div>
+            </div>
+            <!-- Legend with mini progress bars like image -->
+            <div class="gauge-legend" style="gap:12px;width:100%;max-width:260px">
+              <div class="gl-item" style="gap:8px">
+                <div class="gl-dot" style="background:#F97316;width:12px;height:12px;border-radius:50%;flex-shrink:0"></div>
+                <div class="gl-label" style="font-size:13px;font-weight:500;color:var(--text-mid);flex:1">Full-time</div>
+                <div style="flex:1.2;height:4px;background:var(--border);border-radius:99px;overflow:hidden"><div style="width:66%;height:100%;background:#F97316;border-radius:99px"></div></div>
+                <div class="gl-val" style="font-size:13px;font-weight:700;min-width:28px;text-align:right">321</div>
+                <div class="gl-pct" style="font-size:12px;color:var(--text-light);min-width:28px;text-align:right">66%</div>
+              </div>
+              <div class="gl-item" style="gap:8px">
+                <div class="gl-dot" style="background:#FDDCAA;width:12px;height:12px;border-radius:50%;flex-shrink:0"></div>
+                <div class="gl-label" style="font-size:13px;font-weight:500;color:var(--text-mid);flex:1">Part-time</div>
+                <div style="flex:1.2;height:4px;background:var(--border);border-radius:99px;overflow:hidden"><div style="width:21%;height:100%;background:#FDDCAA;border-radius:99px"></div></div>
+                <div class="gl-val" style="font-size:13px;font-weight:700;min-width:28px;text-align:right">24</div>
+                <div class="gl-pct" style="font-size:12px;color:var(--text-light);min-width:28px;text-align:right">21%</div>
+              </div>
+              <div class="gl-item" style="gap:8px">
+                <div class="gl-dot" style="background:#059669;width:12px;height:12px;border-radius:50%;flex-shrink:0"></div>
+                <div class="gl-label" style="font-size:13px;font-weight:500;color:var(--text-mid);flex:1">Internship</div>
+                <div style="flex:1.2;height:4px;background:var(--border);border-radius:99px;overflow:hidden"><div style="width:13%;height:100%;background:#059669;border-radius:99px"></div></div>
+                <div class="gl-val" style="font-size:13px;font-weight:700;min-width:28px;text-align:right">142</div>
+                <div class="gl-pct" style="font-size:12px;color:var(--text-light);min-width:28px;text-align:right">13%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPT BREAKDOWN + LEAVE REQUESTS -->
+      <div class="row3">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Department Breakdown</div><button class="view-all" onclick="navigate('employees',document.querySelector('[data-page=employees]'))">View All →</button></div>
+          <div id="deptBreakdown"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Leave Requests</div><button class="view-all" onclick="navigate('leave',document.querySelector('[data-page=leave]'))">View All →</button></div>
+          <div class="leave-list" id="leaveListDash"></div>
+        </div>
+      </div>
+
+      <!-- TASKS + MEETINGS -->
+      <div class="row3">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Today's Tasks</div><button class="view-all" onclick="navigate('projects',document.querySelector('[data-page=projects]'))">View All →</button></div>
+          <div id="taskList"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Today's Meetings</div><button class="view-all" onclick="navigate('schedule',document.querySelector('[data-page=schedule]'))">View All →</button></div>
+          <div id="meetingList"></div>
+        </div>
+      </div>
+
+      <!-- PAYROLL SNAPSHOT -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Payroll Snapshot — May 2025</div><button class="view-all" onclick="navigate('payroll',document.querySelector('[data-page=payroll]'))">Run Payroll →</button></div>
+        <div class="payroll-grid">
+          <div class="payroll-item"><div class="payroll-lbl">Gross Payroll</div><div class="payroll-val">$2.4M</div><div class="payroll-sub">487 employees</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Deductions</div><div class="payroll-val">$340K</div><div class="payroll-sub">Tax + insurance</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Net Pay</div><div class="payroll-val" style="color:var(--emerald)">$2.06M</div><div class="payroll-sub">Disbursed May 31</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Bonuses</div><div class="payroll-val" style="color:var(--orange)">$82K</div><div class="payroll-sub">Q2 performance</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Avg Salary</div><div class="payroll-val">$4,929</div><div class="payroll-sub">Per employee</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Pending Approval</div><div class="payroll-val" style="color:var(--amber)">4</div><div class="payroll-sub">Need review</div></div>
+        </div>
+        <div style="height:3px;background:var(--border);border-radius:99px;overflow:hidden" role="progressbar" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"><div style="width:68%;height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-mid));border-radius:99px"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--text-light)"><span>Payroll cycle progress</span><span style="color:var(--orange);font-weight:600">68% complete</span></div>
+      </div>
+
+      <!-- EMPLOYEE TABLE -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="emp-table-title">Employee Directory</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="year-select" id="deptFilter"><option>All Dept</option><option>Design</option><option>Engineering</option><option>HR</option><option>Product</option><option>Analytics</option></select>
+            <button class="view-all" onclick="navigate('employees',document.querySelector('[data-page=employees]'))">View All →</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Employee</th><th>Department</th><th>Position</th><th>Join Date</th><th>Status</th></tr></thead>
+            <tbody id="empTableDash"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== EMPLOYEES PAGE ===== -->
+    <div class="page" id="page-employees">
+      <div class="page-header">
+        <div><div class="page-h1">Employees</div><div class="page-sub">Manage your workforce directory</div></div>
+        <button class="btn-add-emp"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Employee</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--orange-soft)"><svg fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Total Staff</div><div class="stat-value">487</div><div class="stat-footer"><span class="stat-badge badge-up">↑ +4.6%</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--emerald-soft)"><svg fill="none" stroke="var(--emerald)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="stat-label">Active</div><div class="stat-value">451</div><div class="stat-footer"><span class="stat-badge badge-up">92.6%</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--amber-soft)"><svg fill="none" stroke="var(--amber)" stroke-width="2" viewBox="0 0 24 24"><path d="M8.56 2.9A7 7 0 0 1 19 9v3a4 4 0 0 0 2 3.46M3.23 11A7 7 0 0 0 10 18.93"/><path d="M19 19H3l2-7 4.34-.86"/></svg></div><div class="stat-label">On Leave</div><div class="stat-value">21</div><div class="stat-footer"><span class="stat-badge" style="background:var(--amber-soft);color:#92400E">4.3%</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--sky-soft)"><svg fill="none" stroke="var(--sky)" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div><div class="stat-label">New This Month</div><div class="stat-value">24</div><div class="stat-footer"><span class="stat-badge badge-up">↑ +12%</span></div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Employees</div>
+          <div style="display:flex;gap:8px">
+            <select class="year-select"><option>All Departments</option><option>Design</option><option>Engineering</option><option>HR</option><option>Product</option><option>Analytics</option><option>Finance</option></select>
+            <select class="year-select"><option>All Status</option><option>Active</option><option>On Leave</option><option>Inactive</option></select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Employee</th><th>Department</th><th>Position</th><th>Join Date</th><th>Salary</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="empTableFull"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ATTENDANCE PAGE ===== -->
+    <div class="page" id="page-attendance">
+      <div class="page-header">
+        <div><div class="page-h1">Attendance</div><div class="page-sub">Track daily, weekly and monthly attendance</div></div>
+        <button class="btn-add-emp">Export Report</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--emerald-soft)"><svg fill="none" stroke="var(--emerald)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="stat-label">Present Today</div><div class="stat-value">458</div><div class="stat-footer"><span class="stat-badge badge-up">94.1%</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--rose-soft)"><svg fill="none" stroke="var(--rose)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div class="stat-label">Absent Today</div><div class="stat-value">6</div><div class="stat-footer"><span class="stat-badge badge-down">1.2%</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--amber-soft)"><svg fill="none" stroke="var(--amber)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">Late Arrivals</div><div class="stat-value">14</div><div class="stat-footer"><span class="stat-badge" style="background:var(--amber-soft);color:#92400E">2.9%</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--sky-soft)"><svg fill="none" stroke="var(--sky)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Avg Attendance (Mo)</div><div class="stat-value">92.4%</div><div class="stat-footer"><span class="stat-badge badge-up">↑ +1.2%</span></div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Annual Attendance Heatmap — 2025</div></div>
+        <div class="heatmap-wrap">
+          <div class="heatmap-months" id="hmMonths2"></div>
+          <div class="heatmap-grid" id="hmGrid2"></div>
+        </div>
+        <div class="heatmap-legend">Less <span class="legend-cell" style="background:#FFF7ED;border:1px solid var(--border)"></span><span class="legend-cell" style="background:#FED7AA"></span><span class="legend-cell" style="background:#FB923C"></span><span class="legend-cell" style="background:#EA6B0A"></span> More</div>
+        <div class="hm-stats-row">
+          <div class="hm-stat"><div class="hm-stat-val">92.4%</div><div class="hm-stat-lbl">Avg Attendance</div></div>
+          <div class="hm-stat"><div class="hm-stat-val">6</div><div class="hm-stat-lbl">Absent Today</div></div>
+          <div class="hm-stat"><div class="hm-stat-val">14</div><div class="hm-stat-lbl">Late Arrivals</div></div>
+          <div class="hm-stat"><div class="hm-stat-val">3</div><div class="hm-stat-lbl">On Leave</div></div>
+        </div>
+      </div>
+      <div class="row3">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Dept Attendance Rate</div></div>
+          <div>
+            <div class="prog-row"><div class="prog-label">Engineering</div><div class="prog-track"><div class="prog-fill" style="width:96%"></div></div><div class="prog-val">96%</div></div>
+            <div class="prog-row"><div class="prog-label">Design</div><div class="prog-track"><div class="prog-fill" style="width:94%"></div></div><div class="prog-val">94%</div></div>
+            <div class="prog-row"><div class="prog-label">HR</div><div class="prog-track"><div class="prog-fill" style="width:91%"></div></div><div class="prog-val">91%</div></div>
+            <div class="prog-row"><div class="prog-label">Product</div><div class="prog-track"><div class="prog-fill" style="width:89%"></div></div><div class="prog-val">89%</div></div>
+            <div class="prog-row"><div class="prog-label">Analytics</div><div class="prog-track"><div class="prog-fill" style="width:87%"></div></div><div class="prog-val">87%</div></div>
+            <div class="prog-row"><div class="prog-label">Finance</div><div class="prog-track"><div class="prog-fill" style="width:93%"></div></div><div class="prog-val">93%</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Absent Today</div></div>
+          <div class="leave-list" id="absentList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PROJECTS PAGE ===== -->
+    <div class="page" id="page-projects">
+      <div class="page-header">
+        <div><div class="page-h1">Projects</div><div class="page-sub">Track all HR projects and initiatives</div></div>
+        <button class="btn-add-emp"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Project</button>
+      </div>
+      <div class="stat-row-3">
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--sky-soft)"><svg fill="none" stroke="var(--sky)" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="stat-label">Active Projects</div><div class="stat-value">12</div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--amber-soft)"><svg fill="none" stroke="var(--amber)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">Due This Week</div><div class="stat-value">3</div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--emerald-soft)"><svg fill="none" stroke="var(--emerald)" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="stat-label">Completed</div><div class="stat-value">28</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">All Tasks</div><select class="year-select"><option>All Projects</option><option>Q2 Review</option><option>Onboarding</option><option>Payroll Audit</option></select></div>
+        <div id="taskListFull"></div>
+      </div>
+    </div>
+
+    <!-- ===== SCHEDULE PAGE ===== -->
+    <div class="page" id="page-schedule">
+      <div class="page-header">
+        <div><div class="page-h1">Schedule</div><div class="page-sub">Meetings, interviews and HR events</div></div>
+        <button class="btn-add-emp"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Event</button>
+      </div>
+      <div class="row3">
+        <div style="grid-column:1/-1">
+          <div class="stat-row-3">
+            <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--orange-soft)"><svg fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><div class="stat-label">Today's Events</div><div class="stat-value">8</div></div></div>
+            <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--sky-soft)"><svg fill="none" stroke="var(--sky)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="stat-label">Meetings This Week</div><div class="stat-value">23</div></div></div>
+            <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--emerald-soft)"><svg fill="none" stroke="var(--emerald)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div><div class="stat-label">Interviews Scheduled</div><div class="stat-value">7</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="row3">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Today — May 16, 2026</div></div>
+          <div id="scheduleToday"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Tomorrow — May 17, 2026</div></div>
+          <div id="scheduleTomorrow"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MESSAGES PAGE ===== -->
+    <div class="page" id="page-messages">
+      <div class="page-header">
+        <div><div class="page-h1">Messages</div><div class="page-sub" id="msgUnreadSub">3 unread conversations</div></div>
+        <button class="btn-add-emp">Compose</button>
+      </div>
+      <div style="display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start">
+        <!-- INBOX LIST -->
+        <div class="card" style="padding:0">
+          <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:14px;font-weight:700;color:var(--text-dark)">Inbox</div>
+            <span class="chip chip-orange" id="msgBadge">3 unread</span>
+          </div>
+          <div class="msg-list" id="msgList"></div>
+        </div>
+        <!-- THREAD PANEL -->
+        <div class="card" id="msgThread" style="padding:0;min-height:420px;display:flex;flex-direction:column">
+          <!-- empty state -->
+          <div id="msgEmpty" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:48px 24px">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="width:48px;height:48px;color:var(--border)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div style="font-size:14px;font-weight:500;color:var(--text-light)">Select a conversation</div>
+            <div style="font-size:12px;color:var(--text-light)">Click a message from the inbox to read it</div>
+          </div>
+          <!-- thread header -->
+          <div id="msgThreadHeader" style="display:none;padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+            <img id="msgThreadAvatar" src="" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--border)">
+            <div>
+              <div id="msgThreadName" style="font-size:14px;font-weight:700;color:var(--text-dark)"></div>
+              <div id="msgThreadRole" style="font-size:12px;color:var(--text-light)"></div>
+            </div>
+          </div>
+          <!-- bubbles -->
+          <div id="msgBubbles" style="flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:12px"></div>
+          <!-- reply box -->
+          <div id="msgReplyBox" style="display:none;padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end">
+            <textarea id="msgReplyInput" rows="2" placeholder="Type a reply…" style="flex:1;resize:none;border:1px solid var(--border);border-radius:10px;padding:9px 13px;font-size:13px;font-family:var(--font);color:var(--text-dark);outline:none;transition:.15s" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+            <button onclick="sendMsgReply()" style="background:var(--orange);color:white;border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAYROLL PAGE ===== -->
+    <div class="page" id="page-payroll">
+      <div class="page-header">
+        <div><div class="page-h1">Payroll</div><div class="page-sub">May 2025 payroll cycle</div></div>
+        <button class="btn-add-emp">Run Payroll</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--emerald-soft)"><svg fill="none" stroke="var(--emerald)" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="stat-label">Gross Payroll</div><div class="stat-value">$2.4M</div><div class="stat-footer"><span class="stat-badge badge-up">↑ +8.3%</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--rose-soft)"><svg fill="none" stroke="var(--rose)" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div><div class="stat-label">Deductions</div><div class="stat-value">$340K</div><div class="stat-footer"><span class="stat-badge badge-down">Tax + insurance</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--sky-soft)"><svg fill="none" stroke="var(--sky)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="stat-label">Net Pay</div><div class="stat-value" style="color:var(--emerald)">$2.06M</div><div class="stat-footer"><span class="stat-badge badge-up">Disbursed May 31</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--orange-soft)"><svg fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="stat-label">Bonuses</div><div class="stat-value" style="color:var(--orange)">$82K</div><div class="stat-footer"><span class="stat-badge chip-orange" style="background:var(--orange-soft);color:var(--orange-dark)">Q2 performance</span></div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Payroll Cycle Progress — May 2025</div><span class="chip chip-orange">68% Complete</span></div>
+        <div class="payroll-grid">
+          <div class="payroll-item"><div class="payroll-lbl">Gross Payroll</div><div class="payroll-val">$2.4M</div><div class="payroll-sub">487 employees</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Deductions</div><div class="payroll-val">$340K</div><div class="payroll-sub">Tax + insurance</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Net Pay</div><div class="payroll-val" style="color:var(--emerald)">$2.06M</div><div class="payroll-sub">Disbursed May 31</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Bonuses</div><div class="payroll-val" style="color:var(--orange)">$82K</div><div class="payroll-sub">Q2 performance</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Avg Salary</div><div class="payroll-val">$4,929</div><div class="payroll-sub">Per employee</div></div>
+          <div class="payroll-item"><div class="payroll-lbl">Pending Approval</div><div class="payroll-val" style="color:var(--amber)">4</div><div class="payroll-sub">Need review</div></div>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:8px"><div style="width:68%;height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-mid));border-radius:99px"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-light)"><span>Cycle started May 1</span><span style="color:var(--orange);font-weight:600">Run by May 31</span></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Payroll by Department</div></div>
+        <div>
+          <div class="prog-row"><div class="prog-label">Engineering</div><div class="prog-track"><div class="prog-fill" style="width:82%"></div></div><div class="prog-val">$680K</div></div>
+          <div class="prog-row"><div class="prog-label">Product</div><div class="prog-track"><div class="prog-fill" style="width:58%"></div></div><div class="prog-val">$420K</div></div>
+          <div class="prog-row"><div class="prog-label">Design</div><div class="prog-track"><div class="prog-fill" style="width:34%"></div></div><div class="prog-val">$280K</div></div>
+          <div class="prog-row"><div class="prog-label">Analytics</div><div class="prog-track"><div class="prog-fill" style="width:28%"></div></div><div class="prog-val">$210K</div></div>
+          <div class="prog-row"><div class="prog-label">HR</div><div class="prog-track"><div class="prog-fill" style="width:22%"></div></div><div class="prog-val">$180K</div></div>
+          <div class="prog-row"><div class="prog-label">Finance</div><div class="prog-track"><div class="prog-fill" style="width:18%"></div></div><div class="prog-val">$140K</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== RECRUITMENT PAGE ===== -->
+    <div class="page" id="page-recruitment">
+      <div class="page-header">
+        <div><div class="page-h1">Recruitment</div><div class="page-sub">3 open positions · 18 active candidates</div></div>
+        <button class="btn-add-emp"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Post Job</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--orange-soft)"><svg fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div><div class="stat-label">Open Positions</div><div class="stat-value">18</div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--sky-soft)"><svg fill="none" stroke="var(--sky)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Applications</div><div class="stat-value">142</div><div class="stat-footer"><span class="stat-badge badge-up">↑ +23%</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--amber-soft)"><svg fill="none" stroke="var(--amber)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="stat-label">Interviews</div><div class="stat-value">24</div><div class="stat-footer"><span class="stat-badge" style="background:var(--amber-soft);color:#92400E">This week</span></div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--emerald-soft)"><svg fill="none" stroke="var(--emerald)" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></div><div class="stat-label">Offers Made</div><div class="stat-value">7</div><div class="stat-footer"><span class="stat-badge badge-up">5 accepted</span></div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Hiring Pipeline</div></div>
+        <div class="pipeline-row">
+          <div class="pipeline-stage"><div class="pipeline-count">142</div><div class="pipeline-name">Applied</div><div class="pipeline-bar"><div class="pipeline-fill" style="width:100%"></div></div></div>
+          <div class="pipeline-stage"><div class="pipeline-count">68</div><div class="pipeline-name">Screened</div><div class="pipeline-bar"><div class="pipeline-fill" style="width:48%"></div></div></div>
+          <div class="pipeline-stage"><div class="pipeline-count">24</div><div class="pipeline-name">Interview</div><div class="pipeline-bar"><div class="pipeline-fill" style="width:17%"></div></div></div>
+          <div class="pipeline-stage"><div class="pipeline-count">12</div><div class="pipeline-name">Final Round</div><div class="pipeline-bar"><div class="pipeline-fill" style="width:8%"></div></div></div>
+          <div class="pipeline-stage"><div class="pipeline-count">7</div><div class="pipeline-name">Offer Sent</div><div class="pipeline-bar"><div class="pipeline-fill" style="width:5%"></div></div></div>
+          <div class="pipeline-stage"><div class="pipeline-count">5</div><div class="pipeline-name">Accepted</div><div class="pipeline-bar"><div class="pipeline-fill" style="width:3.5%"></div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Open Positions</div><select class="year-select"><option>All Depts</option><option>Engineering</option><option>Design</option><option>Product</option><option>HR</option></select></div>
+        <div style="display:flex;flex-direction:column;gap:10px" id="jobList"></div>
+      </div>
+    </div>
+
+    <!-- ===== LEAVE PAGE ===== -->
+    <div class="page" id="page-leave">
+      <div class="page-header">
+        <div><div class="page-h1">Leave Management</div><div class="page-sub">Review and approve leave requests</div></div>
+        <button class="btn-add-emp">Apply Leave</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--orange-soft)"><svg fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="stat-label">Total Requests</div><div class="stat-value">34</div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--amber-soft)"><svg fill="none" stroke="var(--amber)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">Pending</div><div class="stat-value">12</div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--emerald-soft)"><svg fill="none" stroke="var(--emerald)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="stat-label">Approved</div><div class="stat-value">19</div></div></div>
+        <div class="stat-card"><div class="stat-card-left"><div class="stat-icon" style="background:var(--rose-soft)"><svg fill="none" stroke="var(--rose)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div class="stat-label">Rejected</div><div class="stat-value">3</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">All Leave Requests</div><select class="year-select"><option>All Types</option><option>Annual</option><option>Sick</option><option>Maternity</option><option>Paternity</option></select></div>
+        <div class="leave-list" id="leaveListFull"></div>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS PAGE ===== -->
+    <div class="page" id="page-settings">
+      <div class="page-header">
+        <div><div class="page-h1">Settings</div><div class="page-sub">Configure your HR system preferences</div></div>
+        <button class="btn-add-emp">Save Changes</button>
+      </div>
+      <div class="row3">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Profile</div></div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=68&h=68&fit=crop&crop=face&auto=format" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--orange-soft)" alt="Marcus Webb">
+            <div><div style="font-size:14px;font-weight:700;color:var(--text-dark)">Marcus Webb</div><div style="font-size:12px;color:var(--text-light)">HR Manager · marcus.webb@nexushr.io</div><button class="btn-sm" style="margin-top:8px">Change Photo</button></div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Personal Info</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div><label style="font-size:12px;font-weight:500;color:var(--text-mid);display:block;margin-bottom:4px">Full Name</label><input class="input-field" value="Marcus Webb" style="width:100%"></div>
+              <div><label style="font-size:12px;font-weight:500;color:var(--text-mid);display:block;margin-bottom:4px">Email</label><input class="input-field" value="marcus.webb@nexushr.io" style="width:100%"></div>
+              <div><label style="font-size:12px;font-weight:500;color:var(--text-mid);display:block;margin-bottom:4px">Phone</label><input class="input-field" value="+1 (555) 012-3456" style="width:100%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Notifications</div></div>
+          <div class="settings-section">
+            <div class="settings-section-title">Email Alerts</div>
+            <div class="settings-row"><div><div class="settings-label">Leave Requests</div><div class="settings-sub">Get notified when employees apply</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+            <div class="settings-row"><div><div class="settings-label">Payroll Reminders</div><div class="settings-sub">Alerts before payroll deadlines</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+            <div class="settings-row"><div><div class="settings-label">New Applications</div><div class="settings-sub">Recruitment pipeline updates</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+            <div class="settings-row"><div><div class="settings-label">Attendance Alerts</div><div class="settings-sub">Unusual absence patterns</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">System</div>
+            <div class="settings-row"><div><div class="settings-label">Dark Mode</div><div class="settings-sub">Switch to dark interface</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+            <div class="settings-row"><div><div class="settings-label">Compact View</div><div class="settings-sub">Reduce spacing in tables</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app-shell -->
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+const PHOTOS = [
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=48&h=48&fit=crop&crop=face&auto=format',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop&crop=face&auto=format',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=48&h=48&fit=crop&crop=face&auto=format',
+  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=48&h=48&fit=crop&crop=face&auto=format',
+  'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=48&h=48&fit=crop&crop=face&auto=format',
+  'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=48&h=48&fit=crop&crop=face&auto=format',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=48&h=48&fit=crop&crop=face&auto=format',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=48&h=48&fit=crop&crop=face&auto=format',
+];
+
+const employees = [
+  {name:'Jordan Blake',role:'UI Designer',dept:'Design',pos:'Senior',join:'12 Jan 2022',status:'active',salary:'$5,200',photo:PHOTOS[0]},
+  {name:'Ethan Caldwell',role:'Backend Dev',dept:'Engineering',pos:'Lead',join:'03 Mar 2021',status:'active',salary:'$7,400',photo:PHOTOS[2]},
+  {name:'Sofia Reyes',role:'HR Manager',dept:'HR',pos:'Manager',join:'22 Aug 2020',status:'leave',salary:'$5,800',photo:PHOTOS[1]},
+  {name:'Nathan Pierce',role:'Frontend Dev',dept:'Engineering',pos:'Mid',join:'07 May 2023',status:'inactive',salary:'$4,200',photo:PHOTOS[3]},
+  {name:'Layla Morrison',role:'Product Manager',dept:'Product',pos:'Senior',join:'15 Nov 2019',status:'active',salary:'$6,600',photo:PHOTOS[4]},
+  {name:'Owen Fletcher',role:'Data Analyst',dept:'Analytics',pos:'Junior',join:'01 Feb 2024',status:'active',salary:'$3,800',photo:PHOTOS[5]},
+  {name:'Camille Hartley',role:'Finance Lead',dept:'Finance',pos:'Lead',join:'19 Apr 2021',status:'active',salary:'$6,000',photo:PHOTOS[6]},
+  {name:'Declan Murray',role:'DevOps Eng.',dept:'Engineering',pos:'Senior',join:'10 Jun 2020',status:'active',salary:'$6,800',photo:PHOTOS[7]},
+];
+
+const leaves = [
+  {name:'Sofia Reyes',type:'Annual Leave',dates:'May 20–24',photo:PHOTOS[1],status:'approved'},
+  {name:'Nathan Pierce',type:'Sick Leave',dates:'May 16–17',photo:PHOTOS[3],status:'pending'},
+  {name:'Camille Hartley',type:'Maternity Leave',dates:'Jun 1–Jul 31',photo:PHOTOS[6],status:'approved'},
+  {name:'Declan Murray',type:'Unpaid Leave',dates:'May 19',photo:PHOTOS[7],status:'pending'},
+  {name:'Isla Bennett',type:'Paternity Leave',dates:'May 22–26',photo:PHOTOS[4],status:'approved'},
+  {name:'Rhys Coleman',type:'Sick Leave',dates:'May 17',photo:PHOTOS[2],status:'pending'},
+  {name:'Vivienne Cross',type:'Study Leave',dates:'May 20–30',photo:PHOTOS[1],status:'approved'},
+];
+
+const tasks = [
+  {name:'Q2 Performance Review Setup',desc:'Configure templates and notify 487 employees.',pct:65,due:'Due today',photos:[PHOTOS[0],PHOTOS[1],PHOTOS[2]],tag:'HR',tagBg:'#FFF7ED',tagColor:'#EA6B0A'},
+  {name:'Onboarding — 3 New Hires',desc:'Prepare workstations, credentials, buddy assignments.',pct:40,due:'Due tomorrow',photos:[PHOTOS[2],PHOTOS[3]],tag:'Ops',tagBg:'#E0F2FE',tagColor:'#0EA5E9'},
+  {name:'Payroll Audit May 2025',desc:'Cross-check payroll runs and flag discrepancies.',pct:20,due:'Due May 31',photos:[PHOTOS[4],PHOTOS[0],PHOTOS[5]],tag:'Finance',tagBg:'#FEF3C7',tagColor:'#D97706'},
+];
+
+const meetings = [
+  {name:'Leadership Sync — Q2 Goals',time:'10:00 AM – 11:00 AM',platform:'Google Meet',photos:[PHOTOS[0],PHOTOS[1],PHOTOS[2]],join:true},
+  {name:'Candidate Interview — Senior Dev',time:'11:30 AM – 12:00 PM',platform:'Zoom',photos:[PHOTOS[3],PHOTOS[4]],join:true},
+  {name:'Benefits Review Meeting',time:'2:00 PM – 3:00 PM',platform:'Microsoft Teams',photos:[PHOTOS[5],PHOTOS[1]],join:false},
+];
+
+const jobs = [
+  {title:'Senior Frontend Engineer',dept:'Engineering',type:'Full-time',location:'Remote',apps:42,posted:'3 days ago'},
+  {title:'Product Designer',dept:'Design',type:'Full-time',location:'Hybrid',apps:28,posted:'1 week ago'},
+  {title:'HR Specialist',dept:'HR',type:'Part-time',location:'On-site',apps:19,posted:'5 days ago'},
+];
+
+const messages = [
+  {name:'Sofia Reyes',preview:'Regarding my leave request for May 20-24...',time:'9:42 AM',unread:true,photo:PHOTOS[1],role:'Product Designer',thread:[
+    {from:'Sofia Reyes',self:false,time:'9:42 AM',text:'Hi! I wanted to follow up on my annual leave request for May 20–24. I submitted it last week but haven\'t received a confirmation yet. Could you please check the status?'},
+    {from:'You',self:true,time:'9:50 AM',text:'Hi Sofia, thanks for following up! I\'ll look into it right away and get back to you shortly.'},
+    {from:'Sofia Reyes',self:false,time:'9:52 AM',text:'Thank you so much! I just need to know so I can finalize my travel plans.'},
+  ]},
+  {name:'Ethan Caldwell',preview:'The payroll report is ready for review.',time:'Yesterday',unread:true,photo:PHOTOS[2],role:'Finance Lead',thread:[
+    {from:'Ethan Caldwell',self:false,time:'Yesterday 4:10 PM',text:'Hey, just letting you know the May payroll report is ready. I\'ve uploaded it to the shared folder. Please review and approve before Friday.'},
+    {from:'You',self:true,time:'Yesterday 4:35 PM',text:'Got it, thanks Ethan! I\'ll review it today.'},
+  ]},
+  {name:'Layla Morrison',preview:'Can we move the Q2 review meeting?',time:'Yesterday',unread:false,photo:PHOTOS[4],role:'Analytics Manager',thread:[
+    {from:'Layla Morrison',self:false,time:'Yesterday 11:00 AM',text:'Hi! Is there any chance we can move the Q2 review meeting from Friday to Thursday? I have a conflict in the afternoon.'},
+    {from:'You',self:true,time:'Yesterday 11:20 AM',text:'Let me check with the team and I\'ll confirm by end of day.'},
+    {from:'Layla Morrison',self:false,time:'Yesterday 11:22 AM',text:'Perfect, thank you!'},
+  ]},
+  {name:'Owen Fletcher',preview:'Analytics dashboard has been updated.',time:'Monday',unread:false,photo:PHOTOS[5],role:'Data Engineer',thread:[
+    {from:'Owen Fletcher',self:false,time:'Monday 2:00 PM',text:'Just pushed the latest updates to the analytics dashboard. New heatmaps and attendance trend charts are now live. Let me know if you need any changes.'},
+  ]},
+  {name:'Jordan Blake',preview:'New design assets uploaded to Figma.',time:'Monday',unread:true,photo:PHOTOS[0],role:'UI/UX Designer',thread:[
+    {from:'Jordan Blake',self:false,time:'Monday 10:15 AM',text:'Hey! I\'ve uploaded the new design assets to Figma — covers the updated dashboard components and the new onboarding flow. Feel free to leave comments directly in the file.'},
+    {from:'You',self:true,time:'Monday 10:45 AM',text:'Awesome, I\'ll take a look this afternoon. Looks great from the preview!'},
+  ]},
+  {name:'Camille Hartley',preview:'Maternity leave paperwork attached.',time:'Last week',unread:false,photo:PHOTOS[6],role:'HR Coordinator',thread:[
+    {from:'Camille Hartley',self:false,time:'Last week',text:'Hi! I\'ve attached all the required maternity leave paperwork. My leave is scheduled to begin June 1. Please let me know if any additional documents are needed.'},
+    {from:'You',self:true,time:'Last week',text:'Hi Camille, congratulations! I\'ve received everything. We\'ll process it and send you a confirmation shortly.'},
+    {from:'Camille Hartley',self:false,time:'Last week',text:'Thank you so much! Really appreciate it.'},
+  ]},
+];
+
+const depts = [
+  {name:'Engineering',count:128,color:'var(--orange)'},
+  {name:'Product',count:74,color:'var(--sky)'},
+  {name:'Design',count:52,color:'var(--purple)'},
+  {name:'Analytics',count:43,color:'var(--emerald)'},
+  {name:'Finance',count:38,color:'var(--amber)'},
+  {name:'HR',count:31,color:'var(--rose)'},
+];
+
+// ─── NAVIGATION ─────────────────────────────────────────
+function navigate(pageId, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.remove('active');
+    n.removeAttribute('aria-current');
+  });
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+  // highlight matching nav items (sidebar + drawer)
+  document.querySelectorAll('[data-page="' + pageId + '"]').forEach(n => {
+    n.classList.add('active');
+    n.setAttribute('aria-current', 'page');
+  });
+}
+
+// ─── DATE / GREETING ────────────────────────────────────
+const d = new Date();
+const hr = d.getHours();
+document.getElementById('topbarGreetWord').textContent = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+document.getElementById('topbarDate').textContent = d.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+// ─── HEATMAP (reusable) ──────────────────────────────────
+function buildHeatmap(monthsId, gridId) {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const hmMonths = document.getElementById(monthsId);
+  const hmGrid = document.getElementById(gridId);
+  if (!hmMonths || !hmGrid) return;
+  months.forEach(m => {
+    const lbl = document.createElement('div');
+    lbl.className = 'month-label';
+    lbl.textContent = m;
+    hmMonths.appendChild(lbl);
+  });
+  const monthDays = [31,28,31,30,31,30,31,31,30,31,30,31];
+  const TOTAL = 30;
+  months.forEach((m, mi) => {
+    const col = document.createElement('div');
+    col.className = 'month-col';
+    const days = Math.min(monthDays[mi], TOTAL);
+    for (let i = 0; i < TOTAL; i++) {
+      const cell = document.createElement('div');
+      if (i < days) {
+        const rand = Math.random();
+        let level = rand < .10 ? 0 : rand < .28 ? 1 : rand < .52 ? 2 : rand < .78 ? 3 : 4;
+        if (mi === 0 || mi === 11) level = Math.max(0, level - 1);
+        cell.className = `hm-cell hm-${level}`;
+        cell.title = `${m} ${i+1}: ${[0,25,50,75,100][level]}% attendance`;
+      } else {
+        cell.className = 'hm-cell hm-empty';
+      }
+      col.appendChild(cell);
+    }
+    hmGrid.appendChild(col);
+  });
+}
+buildHeatmap('hmMonths', 'hmGrid');
+buildHeatmap('hmMonths2', 'hmGrid2');
+
+// ─── EMPLOYEE TABLE ──────────────────────────────────────
+function empRow(e, extraCol) {
+  const sc = e.status==='active' ? 'pill-active' : e.status==='leave' ? 'pill-leave' : 'pill-inactive';
+  const sl = e.status.charAt(0).toUpperCase() + e.status.slice(1);
+  return `<tr>
+    <td><div class="emp-cell"><img src="${e.photo}" alt="${e.name}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--border)"><div><div class="emp-name">${e.name}</div><div class="emp-role">${e.role}</div></div></div></td>
+    <td><span class="dept-chip">${e.dept}</span></td>
+    <td>${e.pos}</td>
+    <td style="font-size:12px">${e.join}</td>
+    ${extraCol ? `<td style="font-size:13px;font-weight:600;color:var(--text-dark)">${e.salary}</td>` : ''}
+    <td><span class="status-pill ${sc}">${sl}</span></td>
+    ${extraCol ? `<td><div style="display:flex;gap:4px"><button class="btn-sm">View</button><button class="btn-sm primary">Edit</button></div></td>` : ''}
+  </tr>`;
+}
+const empDash = document.getElementById('empTableDash');
+employees.slice(0,6).forEach(e => empDash.innerHTML += empRow(e, false));
+const empFull = document.getElementById('empTableFull');
+employees.forEach(e => empFull.innerHTML += empRow(e, true));
+
+// ─── LEAVE LIST ──────────────────────────────────────────
+function leaveItem(l, showActions) {
+  const sc = l.status==='approved' ? 'ls-approved' : l.status==='pending' ? 'ls-pending' : 'ls-rejected';
+  return `<div class="leave-item">
+    <img src="${l.photo}" alt="${l.name}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--border)">
+    <div class="leave-info"><div class="leave-name">${l.name}</div><div class="leave-type">${l.type}</div></div>
+    <div style="text-align:right">
+      <div class="leave-dates">${l.dates}</div>
+      <span class="leave-status ${sc}" style="margin-top:4px;display:inline-block">${l.status.charAt(0).toUpperCase()+l.status.slice(1)}</span>
+    </div>
+    ${showActions && l.status==='pending' ? `<div style="display:flex;gap:4px;margin-left:8px"><button class="btn-sm primary" onclick="this.closest('.leave-item').querySelector('.leave-status').textContent='Approved';this.closest('.leave-item').querySelector('.leave-status').className='leave-status ls-approved';this.parentElement.remove()">✓</button><button class="btn-sm" onclick="this.closest('.leave-item').querySelector('.leave-status').textContent='Rejected';this.closest('.leave-item').querySelector('.leave-status').className='leave-status ls-rejected';this.parentElement.remove()">✗</button></div>` : ''}
+  </div>`;
+}
+const lDash = document.getElementById('leaveListDash');
+leaves.slice(0,4).forEach(l => lDash.innerHTML += leaveItem(l, false));
+const lFull = document.getElementById('leaveListFull');
+leaves.forEach(l => lFull.innerHTML += leaveItem(l, true));
+
+// ─── TASKS ───────────────────────────────────────────────
+function taskItem(t) {
+  return `<div class="task-item" role="listitem">
+    <div class="task-top">
+      <button class="task-check" role="checkbox" aria-checked="false" onclick="this.classList.toggle('done');this.setAttribute('aria-checked',this.classList.contains('done'))"></button>
+      <div class="task-info">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <div class="task-name">${t.name}</div>
+          <span class="task-tag" style="background:${t.tagBg};color:${t.tagColor}">${t.tag}</span>
+        </div>
+        <div class="task-desc">${t.desc}</div>
+      </div>
+      <div class="task-avatars">${t.photos.map(p=>`<img src="${p}" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:2px solid white;margin-left:-6px;display:inline-block">`).join('')}</div>
+    </div>
+    <div class="task-progress-bar"><div class="task-progress-fill" style="width:${t.pct}%"></div></div>
+    <div class="task-meta"><div class="task-pct">${t.pct}%</div><div class="task-due">${t.due}</div></div>
+  </div>`;
+}
+document.getElementById('taskList').innerHTML = tasks.map(taskItem).join('');
+document.getElementById('taskListFull').innerHTML = tasks.map(taskItem).join('');
+
+// ─── MEETINGS ────────────────────────────────────────────
+function meetingItem(m) {
+  return `<div class="meeting-item" role="listitem">
+    <div class="meeting-top">
+      <div class="meeting-name">${m.name}</div>
+      <div class="m-avatars">${m.photos.map(p=>`<img src="${p}" alt="" style="width:22px;height:22px;border-radius:50%;object-fit:cover;border:2px solid white;margin-left:-5px;display:inline-block">`).join('')}</div>
+    </div>
+    <div class="meeting-time"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><time>${m.time}</time></div>
+    <div class="meeting-footer">
+      <span class="meeting-platform">${m.platform}</span>
+      ${m.join ? `<button class="btn-join">Join Now →</button>` : `<span style="font-size:12px;color:var(--text-light)">Not started</span>`}
+    </div>
+  </div>`;
+}
+document.getElementById('meetingList').innerHTML = meetings.map(meetingItem).join('');
+
+// ─── DEPT BREAKDOWN ──────────────────────────────────────
+const deptEl = document.getElementById('deptBreakdown');
+const deptTotal = depts.reduce((a,d) => a+d.count, 0);
+const deptIcons = {
+  Engineering: `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+  Product: `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+  Design: `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`,
+  Analytics: `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+  Finance: `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+  HR: `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+};
+// stacked bar
+const stackedBar = `<div style="display:flex;height:10px;border-radius:99px;overflow:hidden;margin-bottom:18px;gap:2px">
+  ${depts.map(d=>`<div title="${d.name}: ${d.count}" style="flex:${d.count};background:${d.color};transition:flex .4s ease"></div>`).join('')}
+</div>`;
+// dept cards grid
+const cards = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+  ${depts.map(d => {
+    const pct = Math.round(d.count/deptTotal*100);
+    const colorVal = d.color.startsWith('var') ? '' : d.color;
+    return `<div style="padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);display:flex;flex-direction:column;gap:8px;transition:all .2s;cursor:default"
+      onmouseenter="this.style.borderColor=this.dataset.c;this.style.background='white';this.style.boxShadow='var(--shadow-md)'"
+      onmouseleave="this.style.borderColor='var(--border)';this.style.background='var(--bg)';this.style.boxShadow='none'"
+      data-c="${d.color}">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="width:30px;height:30px;border-radius:8px;background:${d.color}22;display:grid;place-items:center;color:${d.color.startsWith('var') ? 'var(--text-mid)' : d.color}">${deptIcons[d.name]||''}</div>
+        <span style="font-size:11px;font-weight:700;color:${d.color.startsWith('var') ? 'var(--text-mid)' : d.color};background:${d.color}22;padding:2px 7px;border-radius:20px">${pct}%</span>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:1px">${d.name}</div>
+        <div style="font-size:12px;color:var(--text-light)">${d.count} employees</div>
+      </div>
+      <div style="height:4px;background:var(--border);border-radius:99px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:${d.color};border-radius:99px;transition:width .6s ease"></div>
+      </div>
+    </div>`;
+  }).join('')}
+</div>`;
+deptEl.innerHTML = stackedBar + cards;
+
+// ─── ABSENT LIST ─────────────────────────────────────────
+const absentData = [
+  {name:'Nathan Pierce',role:'Frontend Dev',photo:PHOTOS[3],reason:'Sick Leave'},
+  {name:'Isla Bennett',role:'Product Lead',photo:PHOTOS[4],reason:'Personal'},
+  {name:'Rhys Coleman',role:'Backend Dev',photo:PHOTOS[2],reason:'Medical'},
+];
+const absentEl = document.getElementById('absentList');
+absentData.forEach(a => {
+  absentEl.innerHTML += `<div class="leave-item">
+    <img src="${a.photo}" alt="${a.name}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--border)">
+    <div class="leave-info"><div class="leave-name">${a.name}</div><div class="leave-type">${a.role}</div></div>
+    <span class="leave-status ls-pending">${a.reason}</span>
+  </div>`;
+});
+
+// ─── SCHEDULE ────────────────────────────────────────────
+const scheduleToday = [
+  {time:'9:00 AM',title:'Stand-up — Engineering',detail:'Daily sync · 15 min',color:'#F97316'},
+  {time:'10:00 AM',title:'Leadership Sync — Q2 Goals',detail:'Google Meet · 1hr',color:'#0284C7'},
+  {time:'11:30 AM',title:'Candidate Interview — Senior Dev',detail:'Zoom · 30 min',color:'#7C3AED'},
+  {time:'2:00 PM',title:'Benefits Review Meeting',detail:'Microsoft Teams · 1hr',color:'#059669'},
+  {time:'4:00 PM',title:'HR Policy Update Briefing',detail:'Board Room · 45 min',color:'#D97706'},
+];
+const scheduleTomorrow = [
+  {time:'9:30 AM',title:'Onboarding — New Hires',detail:'HR Office · 2hr',color:'#F97316'},
+  {time:'1:00 PM',title:'Q2 Salary Review',detail:'Finance + HR · 1.5hr',color:'#059669'},
+  {time:'3:00 PM',title:'Final Interview — Product Lead',detail:'Zoom · 45 min',color:'#7C3AED'},
+];
+function scheduleItem(e) {
+  return `<div class="schedule-event">
+    <div class="event-time">${e.time}</div>
+    <div class="event-bar" style="background:${e.color}"></div>
+    <div class="event-body"><div class="event-title">${e.title}</div><div class="event-detail">${e.detail}</div></div>
+  </div>`;
+}
+document.getElementById('scheduleToday').innerHTML = scheduleToday.map(scheduleItem).join('');
+document.getElementById('scheduleTomorrow').innerHTML = scheduleTomorrow.map(scheduleItem).join('');
+
+// ─── MESSAGES ────────────────────────────────────────────
+let activeMsgIdx = null;
+function updateMsgBadge() {
+  const unread = messages.filter(m => m.unread).length;
+  const badge = document.getElementById('msgBadge');
+  const sub = document.getElementById('msgUnreadSub');
+  if (badge) badge.textContent = unread + ' unread';
+  if (sub) sub.textContent = unread + ' unread conversation' + (unread !== 1 ? 's' : '');
+}
+function renderMsgList() {
+  const msgEl = document.getElementById('msgList');
+  if (!msgEl) return;
+  msgEl.innerHTML = messages.map((m, i) => `
+    <div class="msg-item ${m.unread ? 'unread' : ''} ${activeMsgIdx === i ? 'msg-active' : ''}" onclick="openMsg(${i})" style="cursor:pointer">
+      <img class="msg-avatar" src="${m.photo}" alt="${m.name}">
+      <div class="msg-body">
+        <div class="msg-name">${m.name}</div>
+        <div class="msg-preview">${m.preview}</div>
+      </div>
+      <div class="msg-meta">
+        <div class="msg-time">${m.time}</div>
+        ${m.unread ? `<div class="msg-badge">New</div>` : ''}
+      </div>
+    </div>`).join('');
+}
+function openMsg(i) {
+  activeMsgIdx = i;
+  const m = messages[i];
+  m.unread = false;
+  updateMsgBadge();
+  renderMsgList();
+  // show header
+  const hdr = document.getElementById('msgThreadHeader');
+  hdr.style.display = 'flex';
+  document.getElementById('msgThreadAvatar').src = m.photo;
+  document.getElementById('msgThreadName').textContent = m.name;
+  document.getElementById('msgThreadRole').textContent = m.role;
+  document.getElementById('msgEmpty').style.display = 'none';
+  document.getElementById('msgReplyBox').style.display = 'flex';
+  // render bubbles
+  const bubbles = document.getElementById('msgBubbles');
+  bubbles.innerHTML = m.thread.map(t => `
+    <div style="display:flex;flex-direction:column;align-items:${t.self ? 'flex-end' : 'flex-start'};gap:3px">
+      <div style="font-size:11px;color:var(--text-light);font-weight:500;padding:0 4px">${t.self ? 'You' : t.from} · ${t.time}</div>
+      <div style="max-width:72%;padding:10px 14px;border-radius:${t.self ? '14px 14px 4px 14px' : '14px 14px 14px 4px'};font-size:13px;line-height:1.55;
+        background:${t.self ? 'var(--orange)' : 'var(--bg)'};
+        color:${t.self ? 'white' : 'var(--text-dark)'};
+        border:${t.self ? 'none' : '1px solid var(--border)'}">
+        ${t.text}
+      </div>
+    </div>`).join('');
+  bubbles.scrollTop = bubbles.scrollHeight;
+}
+function sendMsgReply() {
+  const input = document.getElementById('msgReplyInput');
+  const text = input.value.trim();
+  if (!text || activeMsgIdx === null) return;
+  const m = messages[activeMsgIdx];
+  m.thread.push({from:'You', self:true, time:'Just now', text});
+  m.preview = text.length > 45 ? text.slice(0,45) + '…' : text;
+  input.value = '';
+  openMsg(activeMsgIdx);
+}
+// add active style
+const msgStyle = document.createElement('style');
+msgStyle.textContent = '.msg-active{background:var(--orange-soft)!important;border-left:3px solid var(--orange)}';
+document.head.appendChild(msgStyle);
+renderMsgList();
+updateMsgBadge();
+
+// ─── JOBS ────────────────────────────────────────────────
+const jobEl = document.getElementById('jobList');
+jobs.forEach(j => {
+  jobEl.innerHTML += `<div class="job-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+      <div>
+        <div class="job-title">${j.title}</div>
+        <div class="job-meta">
+          <span class="job-tag">${j.dept}</span>
+          <span>${j.type}</span>·<span>${j.location}</span>·<span>${j.apps} applicants</span>·<span>Posted ${j.posted}</span>
+        </div>
+      </div>
+      <div class="job-actions">
+        <button class="btn-sm">View Apps</button>
+        <button class="btn-sm primary">Manage</button>
+      </div>
+    </div>
+  </div>`;
+});
+
+// ─── DRAWER ─────────────────────────────────────────────
+function openDrawer() {
+  document.getElementById('drawerSidebar').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawerSidebar').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+</body>
+</html>
